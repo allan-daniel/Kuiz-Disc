@@ -1,5 +1,5 @@
 <?php session_start(); ?>
-<?php include "connection.php";
+<?php include 'connection.php';
 if (isset($_SESSION['admin'])) {
 ?>
 
@@ -45,7 +45,7 @@ if (isset($_SESSION['admin'])) {
         <?php 
             
             $query = "SELECT * FROM questions ORDER BY qno DESC";
-            $select_questions = mysqli_query($conn, $query) or die(mysqli_error($conn));
+            $select_questions = mysqli_query($dbh, $query) or die(mysqli_error($dbh));
             if (mysqli_num_rows($select_questions) > 0 ) {
             while ($row = mysqli_fetch_array($select_questions)) {
                 $qno = $row['qno'];

@@ -1,11 +1,11 @@
 <?php
 session_start();
-include "connection.php";
+include 'connection.php';
 if (isset($_SESSION['admin'])) {
 	header("location: adminhome.php");
 }
 if (isset($_POST['password']))  {
-	$password = mysqli_real_escape_string($conn , $_POST['password']);
+	$password = mysqli_real_escape_string($dbh , $_POST['password']);
 	$adminpass = '$2y$10$8WkSLFcoaqhJUJoqjg3K8eWixJWswsICf7FTxehKmx8hpmIKYWqju';
 	if (password_verify($password , $adminpass)) {
 		$_SESSION['admin'] = "active";

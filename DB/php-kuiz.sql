@@ -22,6 +22,32 @@ SET time_zone = "+00:00";
 
 -- --------------------------------------------------------
 
+CREATE TABLE `coach` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `role` enum('provider','user','admin') NOT NULL,
+  `nome` varchar(150),
+  `nome Empresa` varchar(230),
+  `cpf` varchar(130),
+  `rg` varchar(130),
+  `genero` varchar(18),
+  `telefone` varchar(20),
+  `email` varchar(160),
+  `redes_sociais` text,
+  `escolaridade` varchar(230),
+  `logradouro` varchar(250),
+  `numero` int(10),
+  `complemento` varchar(200),
+  `bairro` varchar(200),
+  `cep` varchar(150),
+   `uf` varchar(60),
+   `tipo_endereco` varchar(80),   -- (Residencial ou Comercial)
+   `municipio` varchar(200),
+   `imagem` varchar(250),
+   `senha` varchar(200),
+  `created` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=67 DEFAULT CHARSET=utf8mb4;
+
 --
 -- Table structure for table `questions`
 --

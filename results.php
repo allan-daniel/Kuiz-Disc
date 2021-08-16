@@ -1,53 +1,129 @@
 <?php 
 session_start();
-include "connection.php";
-if (isset($_SESSION['id'])) {
-	?>
-	<?php if(!isset($_SESSION['score'])) {
-		header("location: question.php?n=1");
-	}
-	?>
-<html>
-	<head>
-		<title>PHP-kuiz</title>
-		<link rel="stylesheet" type="text/css" href="css/style.css">
-	</head>
+include 'connection.php';
+if (isset($_SESSION['id'] )) {
+    ?>
+    <?php if(!isset($_SESSION['score'])) {
+        header("location: question.php?n=1");
+    }
+    ?>
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>QUIZ DISC v0.1</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <link rel="icon" type="image/png" href="images/icons/favicon.ico"/>
+    <link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="vendor/animate/animate.css">
+    <link rel="stylesheet" type="text/css" href="vendor/css-hamburgers/hamburgers.min.css">
+    <link rel="stylesheet" type="text/css" href="vendor/animsition/css/animsition.min.css">
+    <link rel="stylesheet" type="text/css" href="vendor/select2/select2.min.css">
+    <link rel="stylesheet" type="text/css" href="vendor/daterangepicker/daterangepicker.css">
+    <link rel="stylesheet" type="text/css" href="css/util.css">
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+</head>
+<body>
+ <!-- <form action="www.google.com" name="fomlink"> -->
+    <div class="container-contact100">
+        <div class="wrap-contact100">
+            <div class="contact100-form validate-form">
+                <span class="contact100-form-title">
+                 <h2>Parabéns!</h2> </span></div>
+        <main>
+            <div class= "container">
+         
+            <?php  
+                   $score = $_SESSION['score'];
+                    $keys = array('a','c','i','o' );
+                    $values = array_fill(0, 4, 0);
+                    $freq = array_combine($keys, $values);
+                     
+                    $len = strlen($score );
+                    for ($i=0; $i<$len; $i++) {
+                       $letter = strtolower($score[$i]);
+                      if (array_key_exists($letter, $freq)) {
+                        $freq[$letter]++;
+                      }
+                    }            
+                     asort($freq);
+                     //print_r( $freq ) ;
+                      end( $freq );
+                      //var_dump(array_key_last ( $freq) ) ;
 
-	<body>
-		<header>
-			<div class="container">
-				<h1>PHP-Kuiz</h1>
-			</div>
-		</header>
+                      if (array_key_last ($freq) == 'c') {
+                        $img = "<div class= 'current'>Seu perfil é como Gato</div><img src='images/gato.jpg' width='100%' height=''>";
+                      }elseif (array_key_last ($freq) == 'i') {
+                        $img = "<div class= 'current'>Seu perfil é como Águia</div><img src='images/aguia.jpg' width='100%' height=''>";
+                      }elseif (array_key_last ($freq) == 'o') {
+                        $img = "<div class= 'current'>Seu perfil é como Lobo</div><img src='images/lobo.jpg' width='100%' height=' '>";
+                      }elseif (array_key_last ($freq) == 'a') {
+                        $img = "<div class= 'current'>Seu perfil é como Tubarão</div><img src='images/tubarao.jpg' width='100%' height=' '>";
+                      }
 
-		<main>
-			<div class= "container">
-			<h2>Congratulations!</h2> 
-				<p>You have successfully completed the test</p>
-				<p>Total points: <?php if (isset($_SESSION['score'])) {
-echo $_SESSION['score']; 
-}; ?> </p>
-		<a href="question.php?n=1" class="start">Start Again</a>
-		<a href="home.php" class="start">Go Home</a>
-		</div>
-		</main>
-		</body>
-		</html>
+                     echo "<div class='container'>";
+                      echo($img);
+                     echo  "</div>";
 
-		<?php 
-		$score = $_SESSION['score'];
-		$email = $_SESSION['email'];
-		$query = "UPDATE users SET score = '$score' WHERE email = '$email'";
-		$run = mysqli_query($conn , $query) or die(mysqli_error($conn));
- 		?>
+                    $score    = $_SESSION['score'];
+                    $email    = $_SESSION['email'];
+                    $id       = $_SESSION['last_id'];
+                
 
 
+                  $query = "SELECT * FROM questions where coach_id= ".$_SESSION['coach_id'];
+                  $run   =  mysqli_query($dbh , $query) or die(mysqli_error($dbh));
+                  $total = mysqli_num_rows($run);
+
+
+
+                $varMultiplica =  100/$total;
+
+                    foreach ($freq as $key => $value) {
+                         $resultado[] = strtoupper( $key ). " - ". $value *$varMultiplica . "%";
+                    }
+                $resultadoString = implode($resultado,',' );
+                $query = "UPDATE users SET score  = '$resultadoString' WHERE id = $id";
+                 mysqli_query($dbh , $query) or die($query);
+     
+                  $sqlC ="SELECT link FROM coach WHERE id = ".$_SESSION['coach_id'];;
+                  $runlink = mysqli_query($dbh , $sqlC) or die(mysqli_error($dbh));
+                  $row = mysqli_fetch_array($runlink);
+            
+                ?><br>
+                
+             <div class="container">
+                 <p>Você completou com sucesso o teste</p>
+                 <br>
+                 <?php if (isset($row['link'])) {?>
+                  
+                <div  class="wrap-contact100-form-btn">
+                  <div class="contact100-form-bgbtn"></div>
+              
+                      <button onclick="location.href='<?=$row['link'];?>'" class="contact100-form-btn">
+                          <span>
+                          Acesse o Link <i class="fa fa-long-arrow-right m-l-7" aria-hidden="true"></i>
+                          </span>
+                      </button>    
+                </div>
+                <br>
+               <?php } ?>
+                 <div class= "current">Percentual de cada habilidade :<br> <?= str_replace(',', ', ', $resultadoString )?></div>
+                <p></p>
+            </div>
+        </div>
+    </div>
+  <!-- </form> -->
 <?php unset($_SESSION['score']); ?>
 <?php unset($_SESSION['time_up']); ?>
-<?php unset($_SESSION['start_time']); ?>
-<?php }
-else {
-	header("location: home.php");
+<?php unset($_SESSION['start_time']); ?> 
+<?php unset($_SESSION['coach_id']); 
+@session_start();
+@session_destroy(); 
+?>
+<?php } else {
+    header("location: home.php");
 }
 ?>
 

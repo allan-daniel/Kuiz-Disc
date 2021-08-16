@@ -1,54 +1,51 @@
 <?php 
 session_start();
-include "connection.php";
+include 'connection.php';
 if (isset($_SESSION['id'])) {
-   
-	if(!isset($_SESSION['score'])) {
-		$_SESSION['score'] = 0;
-	}
+
+	if(!isset($_SESSION['score'])) 
+		$_SESSION['score'] = '';
     
 	if ($_POST) {
         $newtime = time();
-    if ( $newtime > $_SESSION['time_up']) {
-    echo "<script>alert('time up');
-    window.location.href='results.php';</script>";
-}
-else {
-        $_SESSION['start_time'] = $newtime;
+      
 		$qno = $_POST['number'];
         $_SESSION['quiz'] = $_SESSION['quiz'] + 1;
 		$selected_choice = $_POST['choice'];
 		$nextqno = $qno+1;
-
-		$query = "SELECT correct_answer FROM questions WHERE qno= '$qno' ";
-        $run = mysqli_query($conn , $query) or die(mysqli_error($conn));
-        if(mysqli_num_rows($run) > 0 ) {
-        	$row = mysqli_fetch_array($run);
-        	$correct_answer = $row['correct_answer'];
+ 
+        switch ($selected_choice) {
+            case 'ans1':
+                 $_SESSION['score'] .= "C"; 
+                break;
+            case 'ans2':
+                 $_SESSION['score'] .="I"; 
+                break;
+            case 'ans3':
+                 $_SESSION['score'] .="A"; 
+                break;
+            
+            case 'ans4':
+                 $_SESSION['score'] .="O"; 
+                break;
+            
+            default:
+                break;
         }
-        if ($correct_answer == $selected_choice) {
-        	$_SESSION['score']++;
-        }
 
-        $query1 = "SELECT * FROM questions ";
-        $run = mysqli_query($conn , $query1) or die(mysqli_error($conn));
+        $query1 = "SELECT * FROM questions WHERE  status=1 AND  coach_id=".$_SESSION['coach_id'] ;
+        $run = mysqli_query($dbh , $query1) or die(mysqli_error($dbh));
         $totalqn = mysqli_num_rows($run);
 
         if ($qno == $totalqn) {
-        	header("location: results.php");
+        	header("location: results");
         }
         else {
-        	header("location: question.php?n=".$nextqno);
-        }
+        	header("location: question?n=".$nextqno);
+        }   
+   }
+} else {
+    header("location: home");
+}
 
-    
-}
-}
-else {
-    header("location: home.php");
-}
-}
-else {
-	header("location: home.php");
-}
 ?>

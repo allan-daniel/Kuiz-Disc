@@ -1,5 +1,5 @@
 <?php session_start(); ?>
-<?php include "connection.php";
+<?php include 'connection.php';
 if (isset($_SESSION['admin'])) {
 	?>
 
@@ -7,10 +7,10 @@ if (isset($_SESSION['admin'])) {
 
 <?php 
 if (isset($_GET['qno'])) {
-	$qno = mysqli_real_escape_string($conn , $_GET['qno']);
+	$qno = mysqli_real_escape_string($dbh , $_GET['qno']);
 	if (is_numeric($qno)) {
 		$query = "SELECT * FROM questions WHERE qno = '$qno' ";
-		$run = mysqli_query($conn, $query) or die(mysqli_error($conn));
+		$run = mysqli_query($dbh, $query) or die(mysqli_error($dbh));
 		if (mysqli_num_rows($run) > 0) {
 			while ($row = mysqli_fetch_array($run)) {
 				 $qno = $row['qno'];
@@ -35,17 +35,17 @@ if (isset($_GET['qno'])) {
 ?>
 <?php 
 if(isset($_POST['submit'])) {
-	$question =htmlentities(mysqli_real_escape_string($conn , $_POST['question']));
-	$choice1 = htmlentities(mysqli_real_escape_string($conn , $_POST['choice1']));
-	$choice2 = htmlentities(mysqli_real_escape_string($conn , $_POST['choice2']));
-	$choice3 = htmlentities(mysqli_real_escape_string($conn , $_POST['choice3']));
-	$choice4 = htmlentities(mysqli_real_escape_string($conn , $_POST['choice4']));
-	$correct_answer = mysqli_real_escape_string($conn , $_POST['answer']);
+	$question =htmlentities(mysqli_real_escape_string($dbh , $_POST['question']));
+	$choice1 = htmlentities(mysqli_real_escape_string($dbh , $_POST['choice1']));
+	$choice2 = htmlentities(mysqli_real_escape_string($dbh , $_POST['choice2']));
+	$choice3 = htmlentities(mysqli_real_escape_string($dbh , $_POST['choice3']));
+	$choice4 = htmlentities(mysqli_real_escape_string($dbh , $_POST['choice4']));
+	$correct_answer = mysqli_real_escape_string($dbh , $_POST['answer']);
     
 
 	$query = "UPDATE questions SET question = '$question' , ans1 = '$choice1' , ans2= '$choice2' , ans3 = '$choice3' , ans4 = '$choice4' , correct_answer = '$correct_answer' WHERE qno = '$qno' ";
-	$run = mysqli_query($conn , $query) or die(mysqli_error($conn));
-	if (mysqli_affected_rows($conn) > 0 ) {
+	$run = mysqli_query($dbh , $query) or die(mysqli_error($dbh));
+	if (mysqli_affected_rows($dbh) > 0 ) {
 		echo "<script>alert('Question successfully updated');
 		window.location.href= 'allquestions.php'; </script> " ;
 	}

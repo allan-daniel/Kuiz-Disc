@@ -1,5 +1,5 @@
 <?php session_start(); ?>
-<?php include "connection.php";
+<?php include 'connection.php';
 if (isset($_SESSION['admin'])) {
 ?>
 <!DOCTYPE html>
@@ -39,7 +39,7 @@ if (isset($_SESSION['admin'])) {
 		<?php 
             
             $query = "SELECT * FROM users ORDER BY played_on DESC";
-            $select_players = mysqli_query($conn, $query) or die(mysqli_error($conn));
+            $select_players = mysqli_query($dbh, $query) or die(mysqli_error($dbh));
             if (mysqli_num_rows($select_players) > 0 ) {
             while ($row = mysqli_fetch_array($select_players)) {
                 $id = $row['id'];
